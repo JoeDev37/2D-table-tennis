@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Parcel bundler cache
+.parcel-cache/
+
+# Zed editor settings & state
+.zed/
