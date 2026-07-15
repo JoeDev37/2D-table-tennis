@@ -7,7 +7,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "parcel src/index.html -p 3000",
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url /2D-table-tennis/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
