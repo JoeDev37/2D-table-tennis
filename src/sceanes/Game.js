@@ -1,13 +1,23 @@
 import Phaser from "phaser";
 import WebFontFile from "./WebFontFile";
+import GameOver from "./GameOverScreen";
+
+const GameState = {
+  Running: "running",
+  PlayerWon: "player-won",
+  AIWon: "ai-won",
+};
 
 export default class Game extends Phaser.Scene {
   init() {
+    this.gamestate = GameState.Running;
     this.rightPaddleVelocity = new Phaser.Math.Vector2(0, 0);
 
     //score system 1
     this.leftScore = 0;
     this.rightScore = 0;
+
+    this.paused = false;
   }
 
   preload() {
@@ -57,6 +67,10 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
+    if (this.paused || this.gamestate !== GameState.Running) {
+      return;
+    }
+
     const body = this.leftPaddle.body;
 
     if (this.cursors.up.isDown) {
@@ -91,14 +105,46 @@ export default class Game extends Phaser.Scene {
     this.rightPaddle.y += this.rightPaddleVelocity.y;
     this.rightPaddle.body.updateFromGameObject();
 
-    if (this.ball.x < -30) {
+    const x = this.ball.x;
+    const leftBounds = -30;
+    const rightBounds = 1230;
+    if (x >= leftBounds && x <= rightBounds) {
+      return;
+    }
+
+    if (this.ball.x < leftBounds) {
       // score on left side
-      this.resetBall();
-      this.incrementLeftScore();
-    } else if (this.ball.x > 1230) {
-      // score on right side
-      this.resetBall();
+      // this.resetBall();
       this.incrementRightScore();
+    } else if (this.ball.x > rightBounds) {
+      // score on right side
+      // this.resetBall();
+      this.incrementLeftScore();
+    }
+
+    const maxScore = 1;
+
+    if (this.leftScore === maxScore) {
+      // player won
+      console.log("Player won!");
+      this.gamestate = GameState.PlayerWon;
+    } else if (this.rightScore === maxScore) {
+      // AI won
+      console.log("AI won!");
+      this.gamestate = GameState.AIWon;
+    }
+
+    if (this.gamestate === GameState.Running) {
+      this.resetBall();
+    } else {
+      this.ball.active = false;
+      this.physics.world.remove(this.ball.body);
+
+      // show game over/win screen
+      this.scene.start("game-over", {
+        leftScore: this.leftScore,
+        rightScore: this.rightScore,
+      });
     }
   }
 
@@ -116,7 +162,7 @@ export default class Game extends Phaser.Scene {
     this.ball.setPosition(600, 400);
 
     const angle = Phaser.Math.Between(0, 360);
-    const vec = this.physics.velocityFromAngle(angle, 300);
+    const vec = this.physics.velocityFromAngle(angle, 400);
 
     this.ball.body.setVelocity(vec.x, vec.y);
   }
