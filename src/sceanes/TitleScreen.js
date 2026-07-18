@@ -11,11 +11,13 @@ export default class TitleScreen extends Phaser.Scene {
     const title = this.add.text(600, 300, "2D Table Tennis", {
       fontSize: 30,
       fontFamily: "'Press Start 2P'",
+      color: "#cdd6f4",
     });
     title.setOrigin(0.5, 0.5);
 
     const text = this.add.text(600, 400, "Press Space to Start!", {
       fontFamily: "'Press Start 2P'",
+      color: "#cdd6f4",
     });
     text.setOrigin(0.5);
 

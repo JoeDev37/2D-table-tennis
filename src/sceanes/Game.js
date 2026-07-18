@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import WebFontFile from "./WebFontFile";
 import GameOver from "./GameOverScreen";
+import GameBackground from "./GameBackground";
 
 const GameState = {
   Running: "running",
@@ -26,34 +27,38 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
+    const colors = "0xcdd6f4";
+    const fontColor = "#cdd6f4";
     this.scene.run("game-background");
 
     this.physics.world.setBounds(-100, 0, 1400, 800);
 
-    this.ball = this.add.circle(600, 400, 20, 0xffffff, 1);
+    this.ball = this.add.circle(600, 400, 20, colors, 1);
     this.physics.add.existing(this.ball);
     this.ball.body.setCircle(20);
     this.ball.body.setBounce(1, 1);
 
     this.ball.body.setCollideWorldBounds(true, 1, 1);
 
-    this.leftPaddle = this.add.rectangle(30, 400, 50, 130, 0xffffff, 1);
+    this.leftPaddle = this.add.rectangle(30, 400, 50, 130, colors, 1);
     this.physics.add.existing(this.leftPaddle);
     this.leftPaddle.body.immovable = true;
     this.physics.add.collider(this.ball, this.leftPaddle);
     this.leftPaddle.body.setCollideWorldBounds(true);
 
-    this.rightPaddle = this.add.rectangle(1170, 400, 50, 130, 0xffffff, 1);
+    this.rightPaddle = this.add.rectangle(1170, 400, 50, 130, colors, 1);
     this.physics.add.existing(this.rightPaddle, true);
     this.physics.add.collider(this.ball, this.rightPaddle);
 
     // scoring system 2
     this.leftScoreLabel = this.add.text(500, 100, "0");
+    this.leftScoreLabel.setColor(fontColor);
     this.leftScoreLabel.setFontSize(50);
     this.leftScoreLabel.setFontFamily('"Press Start 2P"');
     this.leftScoreLabel.setOrigin(0.5, 0.5);
 
     this.rightScoreLabel = this.add.text(700, 100, "0");
+    this.rightScoreLabel.setColor(fontColor);
     this.rightScoreLabel.setFontSize(50);
     this.rightScoreLabel.setFontFamily('"Press Start 2P"');
     this.rightScoreLabel.setOrigin(0.5, 0.5);
@@ -83,11 +88,11 @@ export default class Game extends Phaser.Scene {
 
     const diff = this.ball.y - this.rightPaddle.y;
 
-    if (Math.abs(diff) < 10) {
+    if (Math.abs(diff) < 1) {
       return;
     }
 
-    const aiSpeed = 0.5;
+    const aiSpeed = 3;
     const maxSpeed = 5;
 
     if (diff < 0) {
@@ -114,15 +119,13 @@ export default class Game extends Phaser.Scene {
 
     if (this.ball.x < leftBounds) {
       // score on left side
-      // this.resetBall();
       this.incrementRightScore();
     } else if (this.ball.x > rightBounds) {
       // score on right side
-      // this.resetBall();
       this.incrementLeftScore();
     }
 
-    const maxScore = 1;
+    const maxScore = 5;
 
     if (this.leftScore === maxScore) {
       // player won
@@ -139,6 +142,8 @@ export default class Game extends Phaser.Scene {
     } else {
       this.ball.active = false;
       this.physics.world.remove(this.ball.body);
+
+      this.scene.stop("game-background");
 
       // show game over/win screen
       this.scene.start("game-over", {
@@ -162,7 +167,7 @@ export default class Game extends Phaser.Scene {
     this.ball.setPosition(600, 400);
 
     const angle = Phaser.Math.Between(0, 360);
-    const vec = this.physics.velocityFromAngle(angle, 400);
+    const vec = this.physics.velocityFromAngle(angle, 300);
 
     this.ball.body.setVelocity(vec.x, vec.y);
   }
