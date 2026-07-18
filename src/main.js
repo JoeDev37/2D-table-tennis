@@ -14,7 +14,6 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 0 },
-      debug: true,
     },
   },
 };
@@ -27,4 +26,3 @@ game.scene.add("game-background", GameBackground);
 game.scene.add("game-over", GameOver);
 
 game.scene.start("titleScreen");
-// game.scene.start("game");

@@ -1,7 +1,5 @@
 import Phaser from "phaser";
 import WebFontFile from "./WebFontFile";
-import GameOver from "./GameOverScreen";
-import GameBackground from "./GameBackground";
 
 const GameState = {
   Running: "running",
