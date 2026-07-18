@@ -8,9 +8,11 @@
   "scripts": {
     "start": "parcel src/index.html -p 3000",
     "build": "parcel build src/index.html --public-url /2D-table-tennis/",
+    "deploy": "gh-pages -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "parcel": "^2.16.4",
     "process": "^0.11.10"
   },
